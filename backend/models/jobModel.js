@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
-const jobSchema = new mongoose.Schema(
+const Schema = mongoose.Schema;
+
+const jobSchema = new Schema(
   {
     name: {
       type: String,
@@ -42,11 +44,17 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: [true, "Additional information is required"],
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+
 const Job = mongoose.model("Job", jobSchema);
 
 module.exports = Job;

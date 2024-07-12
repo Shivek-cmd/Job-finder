@@ -13,14 +13,13 @@ const authMiddleware = async (req, res, next) => {
     try {
       // Verify the token using the secret key from environment variables
       const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-
       // If the token is verified, find the user associated with the token's _id
       if (verified) {
         const user = await User.findOne({ _id: verified._id });
-
         // If the user exists, attach the user to the request object and proceed to the next middleware
         if (user) {
           req.user = user;
+          console.log(req.user);
           next();
         } else {
           // If no user is found, respond with an "Access Denied" message

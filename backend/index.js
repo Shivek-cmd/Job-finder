@@ -7,7 +7,7 @@ const jobRoutes = require("./routes/jobs");
 const authMiddleware = require("./middleware/auth.js");
 const fs = require("fs");
 dotenv.config();
-
+const cors = require("cors");
 // Middleware to log every incoming request
 app.use((req, res, next) => {
   const log = `${req.method} - ${req.url} - ${req.ip} - ${new Date()}\n`;
@@ -19,6 +19,7 @@ app.use((req, res, next) => {
 
 // Middleware to parse incoming JSON requests
 app.use(express.json());
+app.use(cors());
 
 // Routes for authentication
 app.use("/api/auth", authRoutes);

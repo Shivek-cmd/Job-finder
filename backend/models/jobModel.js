@@ -21,12 +21,17 @@ const jobSchema = new Schema(
     },
     jobType: {
       type: String,
-      enum: ["Full Time", "Part-Time", "Remote", "Contract", "Internship"],
+      enum: ["Full-time", "Part-time", "Contract", "Internship"],
       required: [true, "Job type is required"],
     },
     remote: {
-      type: Boolean,
+      type: String,
+      enum: ["Remote", "Office"],
       required: [true, "Remote status is required"],
+    },
+    location: {
+      type: String,
+      required: [true, "Location is required"],
     },
     description: {
       type: String,

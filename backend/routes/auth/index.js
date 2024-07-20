@@ -27,7 +27,11 @@ router.post("/login", async (req, res, next) => {
     const token = jwt.sign({ _id: existingUser._id }, process.env.TOKEN_SECRET);
 
     // Send the token in the response header and a success message in the response body
-    res.header("auth-token", token).json({ message: "Logged in successfully" });
+    res.header("auth-token", token).json({
+      message: "Logged in successfully",
+      token: token,
+      user: { name: existingUser.name },
+    });
   } catch (error) {
     // Pass error to error handling middleware
     next(error);

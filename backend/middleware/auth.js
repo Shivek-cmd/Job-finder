@@ -6,8 +6,8 @@ const User = require("../models/userModel");
 // Authentication middleware function
 const authMiddleware = async (req, res, next) => {
   // Retrieve the token from the request header
-  const token = req.header("auth-token");
-
+  const token = req.body["auth-token"];
+  console.log(token); // Adjust based on your field name
   // Check if the token exists
   if (token) {
     try {

@@ -1,0 +1,58 @@
+[
+  {
+    "_id": "66901c193dbc951c81cc1e3c",
+    "name": "Tech Innovations Inc.",
+    "logo": "https://example.com/logo1.png",
+    "position": "Software Engineer",
+    "skills": ["Frontend", "Backend", "JavaScript"]
+  },
+  {
+    "_id": "66901c233dbc951c81cc1e3f",
+    "name": "Global Solutions LLC",
+    "logo": "https://example.com/logo2.png",
+    "position": "Data Scientist",
+    "skills": ["Backend", "DevOps"]
+  },
+  {
+    "_id": "66901c343dbc951c81cc1e42",
+    "name": "Innovative Designs",
+    "logo": "https://example.com/logo3.png",
+    "position": "UX/UI Designer",
+    "skills": ["Frontend", "JavaScript"]
+  },
+  {
+    "_id": "66901c3c3dbc951c81cc1e45",
+    "name": "NextGen Solutions",
+    "logo": "https://example.com/logo4.png",
+    "position": "DevOps Engineer",
+    "skills": ["DevOps"]
+  },
+  {
+    "_id": "66901c473dbc951c81cc1e48",
+    "name": "Tech Innovators",
+    "logo": "https://example.com/logo5.png",
+    "position": "Backend Developer",
+    "skills": ["Backend", "JavaScript", "DevOps"]
+  },
+  {
+    "_id": "66901c513dbc951c81cc1e4b",
+    "name": "Creative Minds",
+    "logo": "https://example.com/logo6.png",
+    "position": "Frontend Developer",
+    "skills": ["Frontend", "JavaScript"]
+  },
+  {
+    "_id": "66901c593dbc951c81cc1e4e",
+    "name": "AI Pioneers",
+    "logo": "https://example.com/logo7.png",
+    "position": "Machine Learning Engineer",
+    "skills": ["Backend", "DevOps"]
+  },
+  {
+    "_id": "66901c643dbc951c81cc1e51",
+    "name": "Cloud Expertise",
+    "logo": "https://example.com/logo8.png",
+    "position": "Cloud Architect",
+    "skills": ["Frontend", "JavaScript", "DevOps"]
+  }
+]

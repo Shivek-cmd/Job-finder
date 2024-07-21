@@ -1,14 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import { useJobs } from "../context/JobProvider.jsx";
 import { FaTimes } from "react-icons/fa";
 
-const JobCards = ({ jobs, onDelete }) => {
+const JobCards = () => {
+  const { jobs, deleteJobById } = useJobs();
   const [authUser] = useAuth();
+  if (!jobs) return <p>No jobs available</p>;
 
   return (
     <>
-      {jobs.map((job) => (
+      {jobs?.map((job) => (
         <div
           key={job._id}
           className="shadow-custom-light-red w-[90%] md:w-[70%] mx-auto mt-14 p-5 rounded-lg bg-white"
@@ -44,13 +47,13 @@ const JobCards = ({ jobs, onDelete }) => {
                 <>
                   <div className="flex justify-end space-x-4">
                     <Link
-                      to={`/edit/${job._id}`}
+                      to={`/update/${job._id}`}
                       className="border border-red-500 hover:bg-red-200 text-red font-bold py-2 px-4 rounded-md"
                     >
                       Edit Job
                     </Link>
                     <button
-                      onClick={() => onDelete(job._id)}
+                      onClick={() => deleteJobById(job._id)}
                       className="border border-red-500 hover:bg-red-200 text-red font-bold py-2 px-4 rounded-md"
                     >
                       Delete Job

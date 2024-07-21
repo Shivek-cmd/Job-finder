@@ -16,7 +16,9 @@ function Navbar() {
 
   return (
     <div className="bg-red-400 flex justify-between items-center px-5 py-4 shadow-md rounded-bl-3xl rounded-br-3xl">
-      <h1 className="text-2xl font-bold text-white">Jobfinder</h1>
+      <Link to="/" className="text-2xl font-bold text-white">
+        Jobfinder
+      </Link>
 
       <div className="flex space-x-2">
         {authUser ? (
@@ -28,7 +30,7 @@ function Navbar() {
               Logout
             </button>
             <div className="px-5 py-2  rounded-md text-white font-semibold  duration-200 transition-colors">
-              Hello {Username}!!!
+              Hello {Username}
             </div>
           </>
         ) : (

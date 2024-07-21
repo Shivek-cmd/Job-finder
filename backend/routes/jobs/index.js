@@ -48,7 +48,7 @@ router.post("/create", authMiddleware, async (req, res, next) => {
     await job.save();
 
     // Respond with a success message
-    res.status(200).send("Job Created");
+    res.status(200).send(job);
   } catch (err) {
     next(err); // Pass error to the error handling middleware
   }

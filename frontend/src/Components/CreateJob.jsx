@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { FaTimes } from "react-icons/fa";
-import { useAuth } from "../context/AuthProvider.jsx";
-function CreateJobPage() {
-  const [authUser, setAuthUser] = useAuth();
+import { useNavigate, useLocation } from "react-router-dom";
+function CreateJob() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     logo: "",
@@ -34,6 +35,7 @@ function CreateJobPage() {
 
   const handleAddSkill = (e) => {
     if (e.key === "Enter" && skillInput.trim() !== "") {
+      e.preventDefault(); // Prevent form submission
       setFormData({
         ...formData,
         skills: [...formData.skills, skillInput.trim()],
@@ -51,18 +53,21 @@ function CreateJobPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Assuming token is retrieved and stored in local storage or state
-    const token = localStorage.getItem(authUser.token);
-
-    const response = await axios.post(
-      "http://localhost:3000/api/jobs/create",
-      { ...formData, "auth-token": token }, // Send token in the body
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const token = userData ? userData.token : null;
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/jobs/create",
+        {
+          ...formData,
+          token,
+        }
+      );
+      console.log(response.data);
+      // setJobs([...jobs, response.data]); // Add the new job to the job list
+    } catch (error) {
+      console.error("Error creating job:", error);
+    }
   };
 
   return (
@@ -230,4 +235,4 @@ function CreateJobPage() {
   );
 }
 
-export default CreateJobPage;
+export default CreateJob;

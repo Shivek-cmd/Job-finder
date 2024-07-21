@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const connectdb = require("./config/connectdb");
 const authRoutes = require("./routes/auth");
 const jobRoutes = require("./routes/jobs");
-const authMiddleware = require("./middleware/auth.js");
+
 const fs = require("fs");
 dotenv.config();
 const cors = require("cors");
@@ -24,7 +24,7 @@ app.use(cors());
 // Routes for authentication
 app.use("/api/auth", authRoutes);
 // Routes for creating job, protected by authentication middleware
-app.use("/api/jobs", authMiddleware, jobRoutes);
+app.use("/api/jobs", jobRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

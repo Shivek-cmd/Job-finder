@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "./Navbar";
-import jobsData from "../../public/jobs.json";
+import axios from "axios";
 import { useAuth } from "../context/AuthProvider";
 
 function JobDetailsPage() {
@@ -9,10 +9,19 @@ function JobDetailsPage() {
   const { id } = useParams(); // Get the job ID from the URL
   const [job, setJob] = useState(null);
 
+  const fetchJobDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/jobs/get/${id}`
+      );
+      setJob(response.data);
+    } catch (err) {
+      console.error("error", err);
+    }
+  };
   useEffect(() => {
     // Fetch job details based on the ID
-    const jobDetails = jobsData.find((job) => job._id === id);
-    setJob(jobDetails);
+    fetchJobDetails();
   }, [id]);
 
   if (!job) {

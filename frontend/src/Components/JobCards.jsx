@@ -1,9 +1,11 @@
-// JobCards.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
-const JobCards = ({ jobs }) => {
-  const [authUser, setAuthUser] = useAuth();
+import { FaTimes } from "react-icons/fa";
+
+const JobCards = ({ jobs, onDelete }) => {
+  const [authUser] = useAuth();
+
   return (
     <>
       {jobs.map((job) => (
@@ -41,9 +43,18 @@ const JobCards = ({ jobs }) => {
               {authUser ? (
                 <>
                   <div className="flex justify-end space-x-4">
-                    <Link className=" border border-red-500 hover:bg-red-200 text-red font-bold py-2 px-4 rounded-md">
+                    <Link
+                      to={`/edit/${job._id}`}
+                      className="border border-red-500 hover:bg-red-200 text-red font-bold py-2 px-4 rounded-md"
+                    >
                       Edit Job
                     </Link>
+                    <button
+                      onClick={() => onDelete(job._id)}
+                      className="border border-red-500 hover:bg-red-200 text-red font-bold py-2 px-4 rounded-md"
+                    >
+                      Delete Job
+                    </button>
                     <Link
                       to={`/job-details/${job._id}`}
                       className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"

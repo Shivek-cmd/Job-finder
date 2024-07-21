@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Job = require("../../models/jobModel.js");
-
+const authMiddleware = require("../../middleware/auth.js");
 // Route to create a new job listing
-router.post("/create", async (req, res, next) => {
+router.post("/create", authMiddleware, async (req, res, next) => {
   try {
     // Extract job details from request body
     const {
@@ -15,6 +15,7 @@ router.post("/create", async (req, res, next) => {
       remote,
       description,
       about,
+      location,
       skills,
       information,
     } = req.body;
@@ -37,6 +38,7 @@ router.post("/create", async (req, res, next) => {
       remote,
       description,
       about,
+      location,
       skills: skillsArray,
       information,
       userId,
@@ -53,7 +55,7 @@ router.post("/create", async (req, res, next) => {
 });
 
 // Route to delete a job listing by ID
-router.delete("/delete/:id", async (req, res, next) => {
+router.delete("/delete/:id", authMiddleware, async (req, res, next) => {
   try {
     const id = req.params.id;
     const userId = req.user._id;
@@ -105,7 +107,10 @@ router.get("/get/:id", async (req, res, next) => {
 router.get("/all", async (req, res, next) => {
   try {
     // Fetch all job listings, including only specified fields
-    const jobs = await Job.find({}, { name: 1, logo: 1, position: 1 });
+    const jobs = await Job.find(
+      {},
+      { name: 1, logo: 1, position: 1, skills: 1 }
+    );
 
     // Respond with the list of jobs
     res.status(200).json(jobs);
@@ -115,7 +120,7 @@ router.get("/all", async (req, res, next) => {
 });
 
 // Route to update a job listing by ID
-router.patch("/update/:id", async (req, res, next) => {
+router.patch("/update/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -134,6 +139,7 @@ router.patch("/update/:id", async (req, res, next) => {
       remote,
       description,
       about,
+      location,
       skills,
       information,
     } = req.body;
@@ -236,3 +242,5 @@ router.get("/search/:query", async (req, res, next) => {
 });
 
 module.exports = router;
+
+// create,getall,getbyid,

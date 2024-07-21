@@ -5,6 +5,8 @@ function Navbar() {
   const [authUser, setAuthUser] = useAuth();
   const navigate = useNavigate();
 
+  const Username = authUser.name.split(" ")[0];
+
   const handleLogout = () => {
     // Clear user data from localStorage and context
     localStorage.removeItem("userData");
@@ -26,7 +28,7 @@ function Navbar() {
               Logout
             </button>
             <div className="px-5 py-2  rounded-md text-white font-semibold  duration-200 transition-colors">
-              Hello Recruiter
+              Hello {Username}!!!
             </div>
           </>
         ) : (

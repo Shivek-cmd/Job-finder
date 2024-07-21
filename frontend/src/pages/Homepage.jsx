@@ -1,63 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar.jsx";
 import FSB from "../Components/FSB.jsx"; // Import the FSB component
 import JobCards from "../Components/JobCards.jsx"; // Import the JobCards component
-import jobs from "../../public/jobs.json";
 import axios from "axios";
 
 function Homepage() {
-  const [skills, setSkills] = useState([
-    "Frontend",
-    "Backend",
-    "JavaScript",
-    "DevOps",
-  ]);
-  const [selectedSkills, setSelectedSkills] = useState([]);
-  const [filteredJobs, setFilteredJobs] = useState(jobs);
+  const [jobs, setJobs] = useState([]);
 
-  const handleSkills = () => {
-    // Fetch or set available skills if needed
-  };
-
-  const handleSkillChange = (event) => {
-    const newSkill = event.target.value;
-    if (newSkill !== "Skills" && !selectedSkills.includes(newSkill)) {
-      setSelectedSkills([...selectedSkills, newSkill]);
+  const fetchAllJobs = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/jobs/all");
+      setJobs(response.data);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
     }
   };
 
-  const removeSkill = (skillToRemove) => {
-    setSelectedSkills(
-      selectedSkills.filter((skill) => skill !== skillToRemove)
-    );
+  useEffect(() => {
+    fetchAllJobs();
+  }, []);
+
+  const deleteJobById = async (jobId) => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const token = userData ? userData.token : null;
+    try {
+      await axios.delete(`http://localhost:3000/api/jobs/delete/${jobId}`, {
+        data: { token },
+      });
+      setJobs(jobs.filter((job) => job._id !== jobId)); // Remove the deleted job from the job list
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
   };
 
-  const applyFilter = () => {
-    const filtered = jobs.filter((job) =>
-      selectedSkills.every((skill) => job.skills.includes(skill))
-    );
-    setFilteredJobs(filtered);
+  const updateJobsById = async (jobId) => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const token = userData ? userData.token : null;
+    try {
+      await axios.patch(`http://localhost:3000/api/jobs/update/${jobId}`, {
+        data: { token },
+      });
+      setJobs(jobs.filter((job) => job._id !== jobId)); // Remove the deleted job from the job list
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
   };
-
-  const clearFilter = () => {
-    setSelectedSkills([]);
-    setFilteredJobs(jobs); // Reset to the original job list
-  };
-
   return (
     <div>
       <Navbar />
-      <FSB
-        skills={skills}
-        selectedSkills={selectedSkills}
-        handleSkills={handleSkills}
-        handleSkillChange={handleSkillChange}
-        removeSkill={removeSkill}
-        applyFilter={applyFilter}
-        clearFilter={clearFilter}
-      />
-      <JobCards jobs={filteredJobs} />
+      <FSB jobs={jobs} />
+      <JobCards jobs={jobs} onDelete={deleteJobById} />
     </div>
   );
 }
+
 export default Homepage;

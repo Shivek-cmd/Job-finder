@@ -105,7 +105,7 @@ function Login() {
         </div>
       </div>
       {/* Right container */}
-      <div className="hidden md:w-1/2 h-screen overflow-hidden">
+      <div className="hidden md:block md:w-1/2 h-screen overflow-hidden">
         <img
           src={JobImage}
           className="w-full h-full object-cover"

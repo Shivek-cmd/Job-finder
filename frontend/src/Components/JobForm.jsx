@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { useJobs } from "../context/JobProvider";
-import axios from "axios"; // Make sure axios is imported
+import axios from "axios";
 
 function JobForm() {
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ function JobForm() {
 
   const handleAddSkill = (e) => {
     if (e.key === "Enter" && skillInput.trim() !== "") {
-      e.preventDefault(); // Prevent form submission
+      e.preventDefault();
       setFormData({
         ...formData,
         skills: [...formData.skills, skillInput.trim()],
@@ -107,148 +107,160 @@ function JobForm() {
   };
 
   return (
-    <div className="w-screen max-h-screen flex overflow-hidden">
-      <div className="w-[60%] bg-slate-200 p-6 space-y-4 overflow-y-auto">
-        <h1 className="text-2xl font-bold mb-4">
+    <div className="w-full lg:w-3/4 mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg border border-gray-200 flex flex-col lg:flex-row overflow-hidden">
+      <div className="lg:w-3/5 p-6 space-y-6">
+        <h1 className="text-3xl font-bold mb-6">
           {id ? "Update Job Description" : "Add Job Description"}
         </h1>
-        <form className="flex flex-col space-y-3" onSubmit={handleSubmit}>
-          <div className="flex flex-row items-center space-x-4">
-            <label className="w-[30%] font-semibold">Company Name</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter your company name here"
-              value={formData.name}
-              onChange={handleChange}
-              className="p-2 border rounded flex-1"
-            />
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="flex flex-col space-y-2">
+              <label className="font-semibold text-gray-700">
+                Company Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter your company name here"
+                value={formData.name}
+                onChange={handleChange}
+                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="font-semibold text-gray-700">Logo URL</label>
+              <input
+                type="text"
+                name="logo"
+                placeholder="Enter the logo URL here"
+                value={formData.logo}
+                onChange={handleChange}
+                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="font-semibold text-gray-700">
+                Job Position
+              </label>
+              <input
+                type="text"
+                name="position"
+                placeholder="Enter the job position"
+                value={formData.position}
+                onChange={handleChange}
+                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="font-semibold text-gray-700">
+                Monthly Salary
+              </label>
+              <input
+                type="text"
+                name="salary"
+                placeholder="Enter the monthly salary"
+                value={formData.salary}
+                onChange={handleChange}
+                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="font-semibold text-gray-700">Job Type</label>
+              <select
+                name="jobType"
+                value={formData.jobType}
+                onChange={handleChange}
+                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                <option value="">Select Job Type</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Contract">Contract</option>
+                <option value="Internship">Internship</option>
+              </select>
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="font-semibold text-gray-700">
+                Remote/Office
+              </label>
+              <select
+                name="remote"
+                value={formData.remote}
+                onChange={handleChange}
+                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                <option value="">Select Option</option>
+                <option value="Remote">Remote</option>
+                <option value="Office">Office</option>
+              </select>
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label className="font-semibold text-gray-700">Location</label>
+              <input
+                type="text"
+                name="location"
+                placeholder="Enter the job location"
+                value={formData.location}
+                onChange={handleChange}
+                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+            </div>
           </div>
-          <div className="flex flex-row items-center space-x-4">
-            <label className="w-[30%] font-semibold">Logo URL</label>
-            <input
-              type="text"
-              name="logo"
-              placeholder="Enter the logo URL here"
-              value={formData.logo}
-              onChange={handleChange}
-              className="p-2 border rounded flex-1"
-            />
-          </div>
-          <div className="flex flex-row items-center space-x-4">
-            <label className="w-[30%] font-semibold">Job Position</label>
-            <input
-              type="text"
-              name="position"
-              placeholder="Enter the job position"
-              value={formData.position}
-              onChange={handleChange}
-              className="p-2 border rounded flex-1"
-            />
-          </div>
-          <div className="flex flex-row items-center space-x-4">
-            <label className="w-[30%] font-semibold">Monthly Salary</label>
-            <input
-              type="text"
-              name="salary"
-              placeholder="Enter the monthly salary"
-              value={formData.salary}
-              onChange={handleChange}
-              className="p-2 border rounded flex-1"
-            />
-          </div>
-          <div className="flex flex-row items-center space-x-4">
-            <label className="w-[30%] font-semibold">Job Type</label>
-            <select
-              name="jobType"
-              value={formData.jobType}
-              onChange={handleChange}
-              className="p-2 border rounded flex-1"
-            >
-              <option value="">Select Job Type</option>
-              <option value="Full-time">Full-time</option>
-              <option value="Part-time">Part-time</option>
-              <option value="Contract">Contract</option>
-              <option value="Internship">Internship</option>
-            </select>
-          </div>
-          <div className="flex flex-row items-center space-x-4">
-            <label className="w-[30%] font-semibold">Remote/Office</label>
-            <select
-              name="remote"
-              value={formData.remote}
-              onChange={handleChange}
-              className="p-2 border rounded flex-1"
-            >
-              <option value="">Select Option</option>
-              <option value="Remote">Remote</option>
-              <option value="Office">Office</option>
-            </select>
-          </div>
-          <div className="flex flex-row items-center space-x-4">
-            <label className="w-[30%] font-semibold">Location</label>
-            <input
-              type="text"
-              name="location"
-              placeholder="Enter the job location"
-              value={formData.location}
-              onChange={handleChange}
-              className="p-2 border rounded flex-1"
-            />
-          </div>
-          <div className="flex flex-row items-start space-x-4">
-            <label className="w-[30%] font-semibold">Job Description</label>
+          <div className="flex flex-col space-y-2">
+            <label className="font-semibold text-gray-700">
+              Job Description
+            </label>
             <textarea
               name="description"
               placeholder="Enter the job description"
               value={formData.description}
               onChange={handleChange}
               rows="4"
-              className="p-2 border rounded flex-1"
+              className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
-          <div className="flex flex-row items-start space-x-4">
-            <label className="w-[30%] font-semibold">About Company</label>
+          <div className="flex flex-col space-y-2">
+            <label className="font-semibold text-gray-700">About Company</label>
             <textarea
               name="about"
               placeholder="Write about the company"
               value={formData.about}
               onChange={handleChange}
               rows="4"
-              className="p-2 border rounded flex-1"
+              className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
-          <div className="flex flex-row items-start space-x-4">
-            <label className="w-[30%] font-semibold">Skills Required</label>
-            <div className="flex flex-col">
+          <div className="flex flex-col space-y-2">
+            <label className="font-semibold text-gray-700">
+              Skills Required
+            </label>
+            <div className="flex flex-col space-y-2">
               <input
                 type="text"
                 value={skillInput}
                 onChange={handleSkillChange}
                 onKeyDown={handleAddSkill}
                 placeholder="Press Enter to add a skill"
-                className="p-2 border rounded flex-1 "
+                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
-              <div className="flex justify-center  space-x-4 mt-2">
-                <div className="flex flex-wrap space-x-2">
-                  {formData.skills.map((skill, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-200 p-2 rounded-md flex items-center"
-                    >
-                      <span>{skill}</span>
-                      <FaTimes
-                        className="ml-2 cursor-pointer text-red-500"
-                        onClick={() => removeSkill(skill)}
-                      />
-                    </div>
-                  ))}
-                </div>
+              <div className="flex flex-wrap gap-2">
+                {formData.skills.map((skill, index) => (
+                  <div
+                    key={index}
+                    className="bg-gray-200 p-2 rounded-md flex items-center"
+                  >
+                    <span>{skill}</span>
+                    <FaTimes
+                      className="ml-2 cursor-pointer text-red-500 hover:text-red-700"
+                      onClick={() => removeSkill(skill)}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="flex flex-row items-start space-x-4">
-            <label className="w-[30%] font-semibold">
+          <div className="flex flex-col space-y-2">
+            <label className="font-semibold text-gray-700">
               Additional Information
             </label>
             <textarea
@@ -257,27 +269,29 @@ function JobForm() {
               value={formData.information}
               onChange={handleChange}
               rows="4"
-              className="p-2 border rounded flex-1"
+              className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
-          <div className="flex flex-row items-start space-x-4">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
             <button
               type="button"
               onClick={handleClear}
-              className="bg-gray-500 hover:bg-gray-600 text-white p-2 rounded-md mt-4"
+              className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg transition-colors"
             >
               Clear Form
             </button>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md mt-4"
+              className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-lg transition-colors"
             >
               {id ? "Update Job" : "Add Job"}
             </button>
           </div>
         </form>
       </div>
-      <div className="w-[40%] bg-red-400 p-5">Additional Info or Sidebar</div>
+      <div className="hidden lg:block lg:w-2/5 bg-gray-100 p-5 rounded-lg border border-gray-200">
+        {/* Additional Info or Sidebar */}
+      </div>
     </div>
   );
 }

@@ -1,57 +1,70 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider.jsx";
+import { FaBars, FaTimes } from "react-icons/fa";
+
 function Navbar() {
   const [authUser, setAuthUser] = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const Username = authUser.name.split(" ")[0];
+  const Username = authUser ? authUser.name.split(" ")[0] : "";
 
   const handleLogout = () => {
-    // Clear user data from localStorage and context
     localStorage.removeItem("userData");
     setAuthUser(null);
     navigate("/login");
   };
 
   return (
-    <div className="bg-red-400 flex justify-between items-center px-5 py-4 shadow-md rounded-bl-3xl rounded-br-3xl">
-      <Link to="/" className="text-2xl font-bold text-white">
-        Jobfinder
-      </Link>
+    <nav className="bg-red-400 w-full flex flex-col sm:flex-row justify-between items-center px-5 py-4 shadow-md rounded-bl-3xl rounded-br-3xl z-50">
+      <div className="flex w-full items-center justify-between">
+        <Link to="/" className="text-2xl font-bold text-white">
+          Jobfinder
+        </Link>
+        <button
+          className="text-white text-2xl sm:hidden"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      </div>
 
-      <div className="flex space-x-2">
+      <div
+        className={`flex-col sm:flex-row sm:flex sm:items-center ${
+          isMenuOpen ? "flex" : "hidden"
+        } sm:flex space-y-4 sm:space-y-0 sm:space-x-4 mt-4 sm:mt-0`}
+      >
         {authUser ? (
           <>
             <button
               onClick={handleLogout}
-              className="px-5 py-2  rounded-md text-white font-semibold hover:bg-gray-100 duration-200 transition-colors"
+              className="px-4 py-2 border border-transparent rounded-md text-white font-semibold hover:bg-gray-100 hover:text-red-400 transition duration-300 ease-in-out"
             >
               Logout
             </button>
-            <div className="px-5 py-2  rounded-md text-white font-semibold  duration-200 transition-colors">
-              Hello {Username}
+            <div className="px-4 py-2 rounded-md text-white font-semibold">
+              Hello, {Username}
             </div>
           </>
         ) : (
           <>
             <Link
               to="/login"
-              className="px-5 py-2 border rounded-md text-white font-semibold hover:bg-gray-100 duration-200 transition-colors"
+              className="px-4 py-2 border border-transparent rounded-md text-white font-semibold hover:bg-gray-100 hover:text-red-400 transition duration-300 ease-in-out"
             >
               Login
             </Link>
-
             <Link
               to="/register"
-              className="px-5 py-2 border rounded-md text-white font-semibold hover:bg-gray-100 duration-200 transition-colors"
+              className="px-4 py-2 border border-transparent rounded-md text-white font-semibold hover:bg-gray-100 hover:text-red-400 transition duration-300 ease-in-out"
             >
               Register
             </Link>
           </>
         )}
       </div>
-    </div>
+    </nav>
   );
 }
 

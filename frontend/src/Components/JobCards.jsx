@@ -10,79 +10,70 @@ const JobCards = () => {
   if (!jobs) return <p>No jobs available</p>;
 
   return (
-    <>
+    <div className="space-y-6">
       {jobs?.map((job) => (
         <div
           key={job._id}
-          className="shadow-custom-light-red w-[90%] md:w-[70%] mx-auto mt-14 p-5 rounded-lg bg-white"
+          className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 transition-transform duration-300 transform hover:scale-105 mx-auto w-[90%] md:w-[70%] mt-14 p-5"
         >
-          <div className="flex flex-col md:flex-row justify-start items-center md:space-x-5">
-            <div className="w-full md:w-[50%] flex items-center space-x-5">
-              <div className="flex-shrink-0">
-                <img
-                  src={job.logo}
-                  alt={`${job.name} Logo`}
-                  className="w-16 h-16 object-cover rounded-full"
-                />
-              </div>
-              <div className="flex flex-col p-2">
-                <h1 className="text-2xl font-bold p-2">{job.position}</h1>
-                <div className="flex flex-row space-x-4 p-2">
-                  <p className="text-gray-600">{job.name}</p>
-                </div>
-              </div>
+          <div className="flex flex-col md:flex-row items-start md:items-center md:space-x-6">
+            <div className="flex-shrink-0 mb-4 md:mb-0">
+              <img
+                src={job.logo}
+                alt={`${job.name} Logo`}
+                className="w-20 h-20 object-cover rounded-full shadow-md"
+              />
             </div>
-            <div className="w-full md:w-[50%] flex flex-col justify-between mt-5 md:mt-0 space-y-4">
-              <div className="flex space-x-4 justify-end">
+            <div className="flex flex-col flex-grow p-2">
+              <h1 className="text-xl font-semibold mb-2">{job.position}</h1>
+              <p className="text-gray-600 mb-4">{job.name}</p>
+              <div className="flex flex-wrap gap-2 mb-4">
                 {job.skills.map((skill, skillIndex) => (
                   <div
                     key={skillIndex}
-                    className="bg-lightRed border rounded-md p-2"
+                    className="bg-red-100 text-red-500 border border-red-200 rounded-md px-3 py-1 text-sm"
                   >
                     {skill}
                   </div>
                 ))}
               </div>
-              {authUser ? (
-                <>
-                  <div className="flex justify-end space-x-4">
-                    <Link
-                      to={`/update/${job._id}`}
-                      className="border border-red-500 hover:bg-red-200 text-red font-bold py-2 px-4 rounded-md"
-                    >
-                      Edit Job
-                    </Link>
-                    <button
-                      onClick={() => deleteJobById(job._id)}
-                      className="border border-red-500 hover:bg-red-200 text-red font-bold py-2 px-4 rounded-md"
-                    >
-                      Delete Job
-                    </button>
-                    <Link
-                      to={`/job-details/${job._id}`}
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex justify-end">
-                    <Link
-                      to={`/job-details/${job._id}`}
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </>
-              )}
             </div>
+            {authUser && (
+              <div className="flex flex-col md:flex-row md:space-x-4 mt-4 md:mt-0">
+                <Link
+                  to={`/update/${job._id}`}
+                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out"
+                >
+                  Edit Job
+                </Link>
+                <button
+                  onClick={() => deleteJobById(job._id)}
+                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out mt-2 md:mt-0"
+                >
+                  Delete Job
+                </button>
+                <Link
+                  to={`/job-details/${job._id}`}
+                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out mt-2 md:mt-0"
+                >
+                  View Details
+                </Link>
+              </div>
+            )}
+            {!authUser && (
+              <div className="flex justify-end mt-4">
+                <Link
+                  to={`/job-details/${job._id}`}
+                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out"
+                >
+                  View Details
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       ))}
-    </>
+    </div>
   );
 };
 

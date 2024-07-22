@@ -1,7 +1,7 @@
-import React from "react";
-import Navbar from "../Components/Navbar.jsx";
-import FSB from "../Components/FSB.jsx";
-import JobCards from "../Components/JobCards.jsx";
+import React, { useEffect, useState } from "react";
+import Navbar from "../Components/Navbar";
+import FSB from "../Components/FSB";
+import JobCards from "../Components/JobCards";
 
 function Homepage() {
   return (

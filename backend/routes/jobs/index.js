@@ -202,10 +202,7 @@ router.get("/filter/:skills", async (req, res, next) => {
       return res.status(400).send("Skills parameter is required");
     }
 
-    // Prepare skills array - split, trim, and remove extra spaces
-    const skillsArray = String(skills)
-      .split(",")
-      .map((skill) => skill.trim().replace(/\s+/g, ""));
+    const skillsArray = skills.split(",").map((data) => data.trim());
 
     // Find jobs where skills array includes any of the provided skills
     const jobs = await Job.find({ skills: { $in: skillsArray } }).select(
@@ -233,7 +230,12 @@ router.get("/search/:query", async (req, res, next) => {
         { description: { $regex: query, $options: "i" } },
       ],
     }).select("name logo position");
-
+    // Handle the case where no jobs match the query
+    if (jobs.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No jobs found matching the query" });
+    }
     // Respond with matching job listings
     res.status(200).json(jobs);
   } catch (err) {

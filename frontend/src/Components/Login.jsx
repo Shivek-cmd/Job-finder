@@ -50,6 +50,7 @@ function Login() {
       };
       localStorage.setItem("userData", JSON.stringify(userData));
       setAuthUser(userData);
+      alert("Succesfully logged in ");
       navigate("/");
       console.log("data", authUser);
     } catch (error) {

@@ -68,9 +68,12 @@ router.post("/register", async (req, res, next) => {
 
     // Save the new user to the database
     await newUser.save();
-
-    // Respond with a success message
-    res.status(200).json({ message: "User registered successfully" });
+    const token = jwt.sign({ _id: newUser._id }, process.env.TOKEN_SECRET);
+    res.header("auth-token", token).json({
+      message: "User registered successfully",
+      token: token,
+      user: { name: newUser.name },
+    });
   } catch (error) {
     // Pass error to error handling middleware
     next(error);

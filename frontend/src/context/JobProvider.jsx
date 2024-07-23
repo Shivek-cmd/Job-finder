@@ -4,18 +4,18 @@ import axios from "axios";
 export const JobContext = createContext();
 
 export const JobProvider = ({ children }) => {
-  const [jobs, setJobs] = useState([]);
-  const fetchAllJobs = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/api/jobs/all");
-      setJobs(response.data);
+  // const [jobs, setJobs] = useState([]);
+  // const fetchAllJobs = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:3000/api/jobs/all");
+  //     setJobs(response.data);
 
-      console.log("fetchAllJobs api is running");
-      return jobs;
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-    }
-  };
+  //     console.log("fetchAllJobs api is running");
+  //     return jobs;
+  //   } catch (error) {
+  //     console.error("Error fetching jobs:", error);
+  //   }
+  // };
 
   // const searchByText = async (query) => {
   //   try {
@@ -31,62 +31,62 @@ export const JobProvider = ({ children }) => {
   //   }
   // };
 
-  const createJob = async (formData) => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const token = userData ? userData.token : null;
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/jobs/create",
-        {
-          ...formData,
-          token,
-        }
-      );
-      console.log("createJob api is running");
-      setJobs((prevJobs) => [...prevJobs, response.data]);
-    } catch (error) {
-      console.error("Error creating job:", error);
-    }
-  };
+  // const createJob = async (formData) => {
+  //   const userData = JSON.parse(localStorage.getItem("userData"));
+  //   const token = userData ? userData.token : null;
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:3000/api/jobs/create",
+  //       {
+  //         ...formData,
+  //         token,
+  //       }
+  //     );
+  //     console.log("createJob api is running");
+  //     setJobs((prevJobs) => [...prevJobs, response.data]);
+  //   } catch (error) {
+  //     console.error("Error creating job:", error);
+  //   }
+  // };
 
-  const deleteJobById = async (jobId) => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const token = userData ? userData.token : null;
-    try {
-      await axios.delete(`http://localhost:3000/api/jobs/delete/${jobId}`, {
-        data: { token },
-      });
-      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
-      console.log("deleteJobById api is running");
-    } catch (error) {
-      console.error("Error deleting job:", error);
-    }
-  };
+  // const deleteJobById = async (jobId) => {
+  //   const userData = JSON.parse(localStorage.getItem("userData"));
+  //   const token = userData ? userData.token : null;
+  //   try {
+  //     await axios.delete(`http://localhost:3000/api/jobs/delete/${jobId}`, {
+  //       data: { token },
+  //     });
+  //     setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+  //     console.log("deleteJobById api is running");
+  //   } catch (error) {
+  //     console.error("Error deleting job:", error);
+  //   }
+  // };
 
-  const updateJobById = async (formData, jobId) => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const token = userData ? userData.token : null;
+  // const updateJobById = async (formData, jobId) => {
+  //   const userData = JSON.parse(localStorage.getItem("userData"));
+  //   const token = userData ? userData.token : null;
 
-    try {
-      const response = await axios.patch(
-        `http://localhost:3000/api/jobs/update/${jobId}`,
-        {
-          ...formData,
-          token,
-        }
-      );
+  //   try {
+  //     const response = await axios.patch(
+  //       `http://localhost:3000/api/jobs/update/${jobId}`,
+  //       {
+  //         ...formData,
+  //         token,
+  //       }
+  //     );
 
-      // Update the job list with the updated job
-      setJobs((prevJobs) =>
-        prevJobs.map((job) =>
-          job._id === jobId ? { ...job, ...response.data } : job
-        )
-      );
-      console.log("updateJobById api is running");
-    } catch (error) {
-      console.error("Error updating job:", error);
-    }
-  };
+  //     // Update the job list with the updated job
+  //     setJobs((prevJobs) =>
+  //       prevJobs.map((job) =>
+  //         job._id === jobId ? { ...job, ...response.data } : job
+  //       )
+  //     );
+  //     console.log("updateJobById api is running");
+  //   } catch (error) {
+  //     console.error("Error updating job:", error);
+  //   }
+  // };
   const searchByText = async (input) => {
     try {
       const response = await axios.get(
@@ -120,16 +120,18 @@ export const JobProvider = ({ children }) => {
 
   return (
     <JobContext.Provider
-      value={{
-        jobs,
-        setJobs,
-        fetchAllJobs,
-        deleteJobById,
-        createJob,
-        updateJobById,
-        searchByText,
-        filterBySkills,
-      }}
+      value={
+        {
+          // jobs,
+          // setJobs,
+          // fetchAllJobs,
+          // deleteJobById,
+          // createJob,
+          // updateJobById,
+          // searchByText,
+          // filterBySkills,
+        }
+      }
     >
       {children}
     </JobContext.Provider>

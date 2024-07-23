@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import JobImage from "/JobImage.png";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider.jsx";
+
 function Register() {
   const navigate = useNavigate();
-  const [authUser, setAuthUser] = useAuth();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -63,7 +63,6 @@ function Register() {
         name: response.data.user.name,
       };
       localStorage.setItem("userData", JSON.stringify(userData));
-      setAuthUser(userData);
       alert("Succesfully Signed up ");
       navigate("/");
     } catch (error) {

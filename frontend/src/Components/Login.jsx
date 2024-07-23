@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import JobImage from "/JobImage.png";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider.jsx";
 function Login() {
   const navigate = useNavigate();
-  const [authUser, setAuthUser] = useAuth();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -49,10 +48,8 @@ function Login() {
         name: response.data.user.name,
       };
       localStorage.setItem("userData", JSON.stringify(userData));
-      setAuthUser(userData);
       alert("Succesfully logged in ");
       navigate("/");
-      console.log("data", authUser);
     } catch (error) {
       if (error.response) {
         console.error("Server Error:", error.response.data);

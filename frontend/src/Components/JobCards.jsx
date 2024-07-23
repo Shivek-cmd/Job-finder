@@ -1,12 +1,28 @@
 import React, { useEffect, useState } from "react";
 import errorImg from "/error.jpg";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
-import { useJobs } from "../context/JobProvider.jsx";
 
-const JobCards = () => {
-  const { jobs, deleteJobById } = useJobs();
-  const [authUser] = useAuth();
+import axios from "axios";
+const JobCards = ({ jobs }) => {
+  const { token } = JSON.parse(localStorage.getItem("userData"));
+
+  // useEffect(() => {
+  //   fetchAllJobs();
+  // }, []);
+
+  const deleteJobById = async (jobId) => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const token = userData ? userData.token : null;
+    try {
+      await axios.delete(`http://localhost:3000/api/jobs/delete/${jobId}`, {
+        data: { token },
+      });
+      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+      console.log("deleteJobById api is running");
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
+  };
 
   if (!jobs || jobs.length === 0) {
     return (
@@ -56,7 +72,7 @@ const JobCards = () => {
               </div>
             </div>
             <div className="flex flex-col md:flex-row md:space-x-4 mt-4 md:mt-0">
-              {authUser && (
+              {token && (
                 <>
                   <button
                     onClick={() => deleteJobById(job._id)}

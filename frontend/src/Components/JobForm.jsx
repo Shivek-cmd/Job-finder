@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import { useJobs } from "../context/JobProvider";
 import axios from "axios";
+
+const initialFormData = {
+  name: "",
+  logo: "",
+  position: "",
+  salary: "",
+  jobType: "",
+  remote: "",
+  location: "",
+  description: "",
+  about: "",
+  skills: [],
+  information: "",
+};
 
 function JobForm() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { createJob, updateJobById } = useJobs();
-
-  const initialFormData = {
-    name: "",
-    logo: "",
-    position: "",
-    salary: "",
-    jobType: "",
-    remote: "",
-    location: "",
-    description: "",
-    about: "",
-    skills: [],
-    information: "",
-  };
 
   const [formData, setFormData] = useState(initialFormData);
   const [skillInput, setSkillInput] = useState("");
@@ -33,20 +31,7 @@ function JobForm() {
           const response = await axios.get(
             `http://localhost:3000/api/jobs/get/${id}`
           );
-          const jobData = response.data;
-          setFormData({
-            name: jobData.name,
-            logo: jobData.logo,
-            position: jobData.position,
-            salary: jobData.salary,
-            jobType: jobData.jobType,
-            remote: jobData.remote,
-            location: jobData.location,
-            description: jobData.description,
-            about: jobData.about,
-            skills: jobData.skills,
-            information: jobData.information,
-          });
+          setFormData(response.data);
         } catch (error) {
           console.error("Error fetching job details:", error);
         }
@@ -58,43 +43,59 @@ function JobForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSkillChange = (e) => {
-    setSkillInput(e.target.value);
-  };
+  const handleSkillChange = (e) => setSkillInput(e.target.value);
 
   const handleAddSkill = (e) => {
-    if (e.key === "Enter" && skillInput.trim() !== "") {
+    if (e.key === "Enter" && skillInput.trim()) {
       e.preventDefault();
-      setFormData({
-        ...formData,
-        skills: [...formData.skills, skillInput.trim()],
-      });
+      setFormData((prevData) => ({
+        ...prevData,
+        skills: [...prevData.skills, skillInput.trim()],
+      }));
       setSkillInput("");
     }
   };
 
   const removeSkill = (skill) => {
-    setFormData({
-      ...formData,
-      skills: formData.skills.filter((s) => s !== skill),
-    });
+    setFormData((prevData) => ({
+      ...prevData,
+      skills: prevData.skills.filter((s) => s !== skill),
+    }));
+  };
+
+  const createJob = async () => {
+    const token = JSON.parse(localStorage.getItem("userData"))?.token;
+    try {
+      await axios.post("http://localhost:3000/api/jobs/create", {
+        ...formData,
+        token,
+      });
+      console.log("createJob api is running");
+    } catch (error) {
+      console.error("Error creating job:", error);
+    }
+  };
+
+  const updateJobById = async () => {
+    const token = JSON.parse(localStorage.getItem("userData"))?.token;
+    try {
+      await axios.patch(`http://localhost:3000/api/jobs/update/${id}`, {
+        ...formData,
+        token,
+      });
+      console.log("updateJobById api is running");
+    } catch (error) {
+      console.error("Error updating job:", error);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      if (id) {
-        await updateJobById(formData, id);
-      } else {
-        await createJob(formData);
-      }
+      id ? await updateJobById() : await createJob();
       navigate("/");
     } catch (error) {
       console.error(`Error ${id ? "updating" : "creating"} job:`, error);
@@ -114,56 +115,45 @@ function JobForm() {
         </h1>
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="flex flex-col space-y-2">
-              <label className="font-semibold text-gray-700">
-                Company Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                placeholder="Enter your company name here"
-                value={formData.name}
-                onChange={handleChange}
-                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <label className="font-semibold text-gray-700">Logo URL</label>
-              <input
-                type="text"
-                name="logo"
-                placeholder="Enter the logo URL here"
-                value={formData.logo}
-                onChange={handleChange}
-                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <label className="font-semibold text-gray-700">
-                Job Position
-              </label>
-              <input
-                type="text"
-                name="position"
-                placeholder="Enter the job position"
-                value={formData.position}
-                onChange={handleChange}
-                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <label className="font-semibold text-gray-700">
-                Monthly Salary
-              </label>
-              <input
-                type="text"
-                name="salary"
-                placeholder="Enter the monthly salary"
-                value={formData.salary}
-                onChange={handleChange}
-                className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
+            {[
+              {
+                name: "name",
+                placeholder: "Enter your company name here",
+                label: "Company Name",
+              },
+              {
+                name: "logo",
+                placeholder: "Enter the logo URL here",
+                label: "Logo URL",
+              },
+              {
+                name: "position",
+                placeholder: "Enter the job position",
+                label: "Job Position",
+              },
+              {
+                name: "salary",
+                placeholder: "Enter the monthly salary",
+                label: "Monthly Salary",
+              },
+              {
+                name: "location",
+                placeholder: "Enter the job location",
+                label: "Location",
+              },
+            ].map(({ name, placeholder, label }) => (
+              <div key={name} className="flex flex-col space-y-2">
+                <label className="font-semibold text-gray-700">{label}</label>
+                <input
+                  type="text"
+                  name={name}
+                  placeholder={placeholder}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
+              </div>
+            ))}
             <div className="flex flex-col space-y-2">
               <label className="font-semibold text-gray-700">Job Type</label>
               <select
@@ -173,10 +163,13 @@ function JobForm() {
                 className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 <option value="">Select Job Type</option>
-                <option value="Full-time">Full-time</option>
-                <option value="Part-time">Part-time</option>
-                <option value="Contract">Contract</option>
-                <option value="Internship">Internship</option>
+                {["Full-time", "Part-time", "Contract", "Internship"].map(
+                  (type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  )
+                )}
               </select>
             </div>
             <div className="flex flex-col space-y-2">
@@ -190,46 +183,46 @@ function JobForm() {
                 className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 <option value="">Select Option</option>
-                <option value="Remote">Remote</option>
-                <option value="Office">Office</option>
+                {["Remote", "Office"].map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
             </div>
-            <div className="flex flex-col space-y-2">
-              <label className="font-semibold text-gray-700">Location</label>
-              <input
-                type="text"
-                name="location"
-                placeholder="Enter the job location"
-                value={formData.location}
+          </div>
+          {[
+            {
+              name: "description",
+              label: "Job Description",
+              rows: 4,
+              placeholder: "Enter the job description",
+            },
+            {
+              name: "about",
+              label: "About Company",
+              rows: 4,
+              placeholder: "Write about the company",
+            },
+            {
+              name: "information",
+              label: "Additional Information",
+              rows: 4,
+              placeholder: "Enter any additional information",
+            },
+          ].map(({ name, label, rows, placeholder }) => (
+            <div key={name} className="flex flex-col space-y-2">
+              <label className="font-semibold text-gray-700">{label}</label>
+              <textarea
+                name={name}
+                placeholder={placeholder}
+                value={formData[name]}
                 onChange={handleChange}
+                rows={rows}
                 className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
-          </div>
-          <div className="flex flex-col space-y-2">
-            <label className="font-semibold text-gray-700">
-              Job Description
-            </label>
-            <textarea
-              name="description"
-              placeholder="Enter the job description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="4"
-              className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
-          </div>
-          <div className="flex flex-col space-y-2">
-            <label className="font-semibold text-gray-700">About Company</label>
-            <textarea
-              name="about"
-              placeholder="Write about the company"
-              value={formData.about}
-              onChange={handleChange}
-              rows="4"
-              className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
-          </div>
+          ))}
           <div className="flex flex-col space-y-2">
             <label className="font-semibold text-gray-700">
               Skills Required
@@ -258,19 +251,6 @@ function JobForm() {
                 ))}
               </div>
             </div>
-          </div>
-          <div className="flex flex-col space-y-2">
-            <label className="font-semibold text-gray-700">
-              Additional Information
-            </label>
-            <textarea
-              name="information"
-              placeholder="Enter any additional information"
-              value={formData.information}
-              onChange={handleChange}
-              rows="4"
-              className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
           </div>
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
             <button

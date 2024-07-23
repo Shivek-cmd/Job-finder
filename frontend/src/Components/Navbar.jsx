@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider.jsx";
+
 import { FaBars, FaTimes } from "react-icons/fa";
 
 function Navbar() {
-  const [authUser, setAuthUser] = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  const Username = authUser ? authUser.name.split(" ")[0] : "";
+  const { token } = JSON.parse(localStorage.getItem("userData"));
+  const { name } = JSON.parse(localStorage.getItem("userData"));
+  const userName = name.split(" ")[0];
 
   const handleLogout = () => {
     localStorage.removeItem("userData");
-    setAuthUser(null);
+
     navigate("/login");
   };
 
@@ -35,7 +35,7 @@ function Navbar() {
           isMenuOpen ? "flex" : "hidden"
         } sm:flex space-y-4 sm:space-y-0 sm:space-x-4 mt-4 sm:mt-0`}
       >
-        {authUser ? (
+        {token ? (
           <>
             <button
               onClick={handleLogout}
@@ -44,7 +44,7 @@ function Navbar() {
               Logout
             </button>
             <div className="px-4 py-2 rounded-md text-white font-semibold">
-              Hello, {Username}
+              Hello, {userName}
             </div>
           </>
         ) : (

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import axios from "axios";
-import { useAuth } from "../context/AuthProvider";
-import { useJobs } from "../context/JobProvider.jsx";
+
 function JobDetailsPage() {
-  const [authUser] = useAuth();
   const { id } = useParams(); // Get the job ID from the URL
   const [jobs, setJobs] = useState(null);
+  const { token } = JSON.parse(localStorage.getItem("userData"));
+
   const fetchJobDetails = async () => {
     try {
       const response = await axios.get(
@@ -42,7 +42,7 @@ function JobDetailsPage() {
         </div>
         <div className="flex justify-between items-center">
           <h1 className="text-4xl font-extrabold">{jobs.position}</h1>
-          {authUser && (
+          {token && (
             <Link
               to={`/update/${jobs._id}`}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"

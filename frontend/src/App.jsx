@@ -14,7 +14,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Homepage />} />
           <Route path="/job-details/:id" element={<JobDetailsPage />} />
-          <Route path="/create" element={<JobForm />} />
+          <Route path="/jobform" element={<JobForm />} />
           <Route path="/update/:id" element={<JobForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

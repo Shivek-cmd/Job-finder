@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaPlus, FaTimes } from "react-icons/fa";
-import { useAuth } from "../context/AuthProvider";
 import { Link } from "react-router-dom";
-import { useJobs } from "../context/JobProvider";
 
-const FSB = () => {
-  const [authUser] = useAuth();
-  const { fetchAllJobs, filterBySkills } = useJobs();
+const FSB = ({ searchByText, fetchAllJobs }) => {
   const [skills, setSkills] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [input, setInput] = useState("");
+  const { token } = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {
-    fetchAllJobs();
-  }, []);
-
-  // useEffect(() => {
-  //   searchByText(input);
-  // });
-
-  const handleSkills = () => {
+    // Initialize skills only once
     const array = [
       "JavaScript",
       "Node.js",
@@ -30,7 +20,7 @@ const FSB = () => {
       "Docker",
     ];
     setSkills(array);
-  };
+  }, []);
 
   const handleSkillChange = (e) => {
     const selectedSkill = e.target.value;
@@ -52,6 +42,14 @@ const FSB = () => {
     setInput("");
   };
 
+  useEffect(() => {
+    if (input) {
+      searchByText(input);
+    } else {
+      fetchAllJobs();
+    }
+  }, [input, searchByText]);
+
   return (
     <div className="shadow-md border rounded-lg w-full lg:w-3/4 p-4 mx-auto mt-10 space-y-8 bg-white">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-4">
@@ -63,9 +61,9 @@ const FSB = () => {
             placeholder="Search jobs by title, skill, or company"
             className="w-full lg:w-3/4 py-2 px-4 border rounded-md text-black placeholder-gray-500 border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
           />
-          {authUser && (
+          {token && (
             <Link
-              to="/create"
+              to="/jobform"
               className="flex items-center justify-center py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-md transition duration-300 ease-in-out lg:ml-4 w-full lg:w-auto"
             >
               <FaPlus className="mr-2" />
@@ -77,7 +75,6 @@ const FSB = () => {
       <div className="flex flex-col lg:flex-row items-start lg:items-center lg:space-x-14 space-y-4 lg:space-y-0">
         <select
           onChange={handleSkillChange}
-          onClick={handleSkills}
           className="w-full lg:w-[30%] p-2 border rounded-md outline-none text-gray-700 bg-gray-50 hover:bg-gray-100 focus:ring-2 focus:ring-red-500"
         >
           <option value="">Select a skill</option>

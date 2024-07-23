@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import JobImage from "/JobImage.png";
-import axios from "axios";
+import { registerUser } from "../api/User"; // Adjust the path as needed
 import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
@@ -46,32 +46,31 @@ function Register() {
       return;
     }
     setErrors({});
-    // Handle registration logic here
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
-        {
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          mobile: formData.mobile,
-        }
+      const data = await registerUser(
+        formData.name,
+        formData.email,
+        formData.password,
+        formData.mobile
       );
-      console.log(response.data);
+
       const userData = {
-        token: response.data.token,
-        name: response.data.user.name,
+        token: data.token,
+        name: data.user.name,
       };
       localStorage.setItem("userData", JSON.stringify(userData));
-      alert("Succesfully Signed up ");
+      alert("Successfully signed up!");
       navigate("/");
     } catch (error) {
       if (error.response) {
         console.error("Server Error:", error.response.data);
+        alert("Registration failed. Please try again.");
       } else if (error.request) {
         console.error("Network Error:", error.request);
+        alert("Network error, please try again.");
       } else {
         console.error("Error:", error.message);
+        alert("An error occurred, please try again.");
       }
     }
   };

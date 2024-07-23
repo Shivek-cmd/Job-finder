@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-
+import { createJob, updateJobById, fetchJobDetailsById } from "../api/Jobs";
 const initialFormData = {
   name: "",
   logo: "",
@@ -28,10 +27,8 @@ function JobForm() {
     if (id) {
       const fetchJobDetails = async () => {
         try {
-          const response = await axios.get(
-            `http://localhost:3000/api/jobs/get/${id}`
-          );
-          setFormData(response.data);
+          const data = await fetchJobDetailsById(id);
+          setFormData(data);
         } catch (error) {
           console.error("Error fetching job details:", error);
         }
@@ -66,36 +63,14 @@ function JobForm() {
     }));
   };
 
-  const createJob = async () => {
-    const token = JSON.parse(localStorage.getItem("userData"))?.token;
-    try {
-      await axios.post("http://localhost:3000/api/jobs/create", {
-        ...formData,
-        token,
-      });
-      console.log("createJob api is running");
-    } catch (error) {
-      console.error("Error creating job:", error);
-    }
-  };
-
-  const updateJobById = async () => {
-    const token = JSON.parse(localStorage.getItem("userData"))?.token;
-    try {
-      await axios.patch(`http://localhost:3000/api/jobs/update/${id}`, {
-        ...formData,
-        token,
-      });
-      console.log("updateJobById api is running");
-    } catch (error) {
-      console.error("Error updating job:", error);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      id ? await updateJobById() : await createJob();
+      if (id) {
+        await updateJobById(id, formData);
+      } else {
+        await createJob(formData);
+      }
       navigate("/");
     } catch (error) {
       console.error(`Error ${id ? "updating" : "creating"} job:`, error);

@@ -1,43 +1,48 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import axios from "axios";
-const FSB = ({ jobs, setJobs }) => {
+import {
+  fetchAllJobs,
+  searchJobsByText,
+  filterJobsBySkills,
+} from "../api/Jobs.js";
+
+const FSB = ({ setJobs }) => {
   const [skills, setSkills] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [input, setInput] = useState("");
-  const { token } = JSON.parse(localStorage.getItem("userData"));
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  const token = userData?.token || null;
+
   const skillSelectRef = useRef(null);
+
   const searchByText = async (input) => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/jobs/search/${input}`
-      );
-
-      setJobs(response.data);
-
+      const data = await searchJobsByText(input);
+      setJobs(data);
       console.log("searchByText api is running");
     } catch (error) {
       console.error("Error searching for jobs:", error);
     }
   };
-  const fetchAllJobs = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/api/jobs/all");
-      setJobs(response.data);
 
-      console.log("fetchAllJobs api is running");
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-    }
-  };
   useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const data = await fetchAllJobs();
+        setJobs(data);
+      } catch (error) {
+        console.error("Error fetching jobs in useEffect:", error);
+      }
+    };
+
     if (input) {
       searchByText(input);
     } else {
-      fetchAllJobs();
+      fetchJobs();
     }
-  }, [input]);
+  }, [input, setJobs]);
+
   useEffect(() => {
     const array = [
       "JavaScript",
@@ -60,47 +65,36 @@ const FSB = ({ jobs, setJobs }) => {
   };
 
   const removeSkill = (skill) => {
-    if (selectedSkills.length == 0) {
-      setSelectedSkills([]);
-    } else {
-      setSelectedSkills(selectedSkills.filter((s) => s !== skill));
-    }
+    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
   };
-  const filterBySkills = async (selectedSkills) => {
+
+  const applyFilter = async () => {
     try {
-      const skillsParam = Array.isArray(selectedSkills)
-        ? selectedSkills.join(",")
-        : selectedSkills;
-
-      const url = `http://localhost:3000/api/jobs/filter/${encodeURIComponent(
-        skillsParam
-      )}`;
-
-      const response = await axios.get(url);
-
-      // Update jobs with the filtered result
-      setJobs(response.data);
-      console.log("filterBySkills api is running");
+      if (selectedSkills.length === 0) {
+        const data = await fetchAllJobs();
+        setJobs(data);
+      } else {
+        const data = await filterJobsBySkills(selectedSkills);
+        setJobs(data);
+      }
+      console.log("applyFilter api is running");
     } catch (error) {
-      console.error("Error filtering jobs by skills:", error);
+      console.error("Error applying filter:", error);
     }
   };
 
-  const applyFilter = () => {
-    if (selectedSkills.length == 0) {
-      fetchAllJobs();
-    } else {
-      filterBySkills(selectedSkills);
-    }
-  };
-
-  const clearFilters = () => {
+  const clearFilters = async () => {
     setSelectedSkills([]);
     setInput("");
     if (skillSelectRef.current) {
       skillSelectRef.current.value = "";
     }
-    fetchAllJobs();
+    try {
+      const data = await fetchAllJobs();
+      setJobs(data);
+    } catch (error) {
+      console.error("Error clearing filters:", error);
+    }
   };
 
   return (
@@ -127,7 +121,7 @@ const FSB = ({ jobs, setJobs }) => {
       </div>
       <div className="flex flex-col lg:flex-row items-start lg:items-center lg:space-x-14 space-y-4 lg:space-y-0">
         <select
-          ref={skillSelectRef} //
+          ref={skillSelectRef}
           onChange={handleSkillChange}
           className="w-full lg:w-[30%] p-2 border rounded-md outline-none text-gray-700 bg-gray-50 hover:bg-gray-100 focus:ring-2 focus:ring-red-500"
         >

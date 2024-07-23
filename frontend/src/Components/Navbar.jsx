@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { FaBars, FaTimes } from "react-icons/fa";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { token } = JSON.parse(localStorage.getItem("userData"));
-  const { name } = JSON.parse(localStorage.getItem("userData"));
+
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  const token = userData?.token || null;
+  const name = userData?.name || "";
   const userName = name.split(" ")[0];
 
   const handleLogout = () => {
     localStorage.removeItem("userData");
-
     navigate("/login");
   };
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import JobImage from "/JobImage.png";
-import axios from "axios";
+import { loginUser } from "../api/User"; // Adjust the path as needed
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
@@ -35,28 +35,26 @@ function Login() {
     }
     setErrors({});
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
-        {
-          email: formData.email,
-          password: formData.password,
-        }
-      );
+      const data = await loginUser(formData.email, formData.password);
 
       const userData = {
-        token: response.data.token,
-        name: response.data.user.name,
+        token: data.token,
+        name: data.user.name,
       };
-      localStorage.setItem("userData", JSON.stringify(userData));
+
       alert("Successfully logged in!");
+      localStorage.setItem("userData", JSON.stringify(userData));
       navigate("/");
     } catch (error) {
       if (error.response) {
         console.error("Server Error:", error.response.data);
+        alert("Invalid email or password");
       } else if (error.request) {
         console.error("Network Error:", error.request);
+        alert("Network error, please try again");
       } else {
         console.error("Error:", error.message);
+        alert("An error occurred, please try again");
       }
     }
   };
@@ -101,7 +99,6 @@ function Login() {
           </Link>
         </div>
       </div>
-      {/* Right container */}
       <div className="hidden md:block md:w-1/2 h-screen overflow-hidden">
         <img
           src={JobImage}

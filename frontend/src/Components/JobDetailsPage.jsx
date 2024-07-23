@@ -1,39 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
-import axios from "axios";
+import { fetchJobDetailsById, deleteJobById } from "../api/Jobs.js";
 
 function JobDetailsPage() {
   const { id } = useParams(); // Get the job ID from the URL
   const [jobs, setJobs] = useState(null);
-  const { token } = JSON.parse(localStorage.getItem("userData"));
+  const { token } = JSON.parse(localStorage.getItem("userData") || "{}");
   const navigate = useNavigate(); // Use useNavigate for redirection
 
   const fetchJobDetails = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/jobs/get/${id}`
-      );
-      setJobs(response.data);
+      const data = await fetchJobDetailsById(id);
+      setJobs(data);
     } catch (err) {
       console.error("Error fetching job details:", err);
     }
   };
 
-  const deleteJobById = async () => {
+  const handleDeleteJob = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/jobs/delete/${id}`, {
-        data: { token },
-      });
+      await deleteJobById(id, token);
       console.log("Job deleted successfully");
-      navigate("/"); // Redirect to homepage after deletion
+      navigate("/");
     } catch (error) {
       console.error("Error deleting job:", error);
     }
   };
 
   useEffect(() => {
-    // Fetch job details based on the ID
     fetchJobDetails();
   }, [id]);
 
@@ -60,7 +55,7 @@ function JobDetailsPage() {
             {token && (
               <>
                 <button
-                  onClick={deleteJobById} // Fix the button onClick handler
+                  onClick={handleDeleteJob}
                   className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
                 >
                   Delete Job

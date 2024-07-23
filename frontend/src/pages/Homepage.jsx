@@ -9,7 +9,7 @@ function Homepage() {
   return (
     <div>
       <Navbar />
-      <FSB jobs={jobs} setJobs={setJobs} />
+      <FSB setJobs={setJobs} />
       <JobCards jobs={jobs} />
     </div>
   );

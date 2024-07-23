@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import JobImage from "/JobImage.png";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+
 function Login() {
   const navigate = useNavigate();
 
@@ -33,7 +34,6 @@ function Login() {
       return;
     }
     setErrors({});
-    // Handle login logic here
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/login",
@@ -42,13 +42,13 @@ function Login() {
           password: formData.password,
         }
       );
-      console.log(response);
+
       const userData = {
         token: response.data.token,
         name: response.data.user.name,
       };
       localStorage.setItem("userData", JSON.stringify(userData));
-      alert("Succesfully logged in ");
+      alert("Successfully logged in!");
       navigate("/");
     } catch (error) {
       if (error.response) {
@@ -63,7 +63,6 @@ function Login() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left container */}
       <div className="w-full md:w-1/2 p-8 flex flex-col justify-center space-y-4">
         <div>
           <h1 className="font-bold text-3xl mb-4">Already have an account?</h1>

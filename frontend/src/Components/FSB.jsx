@@ -1,15 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
-const FSB = ({ searchByText, fetchAllJobs }) => {
+import axios from "axios";
+const FSB = ({ jobs, setJobs }) => {
   const [skills, setSkills] = useState([]);
   const [selectedSkills, setSelectedSkills] = useState([]);
   const [input, setInput] = useState("");
   const { token } = JSON.parse(localStorage.getItem("userData"));
+  const skillSelectRef = useRef(null);
+  const searchByText = async (input) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/jobs/search/${input}`
+      );
 
+      setJobs(response.data);
+
+      console.log("searchByText api is running");
+    } catch (error) {
+      console.error("Error searching for jobs:", error);
+    }
+  };
+  const fetchAllJobs = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/jobs/all");
+      setJobs(response.data);
+
+      console.log("fetchAllJobs api is running");
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    }
+  };
   useEffect(() => {
-    // Initialize skills only once
+    if (input) {
+      searchByText(input);
+    } else {
+      fetchAllJobs();
+    }
+  }, [input]);
+  useEffect(() => {
     const array = [
       "JavaScript",
       "Node.js",
@@ -18,6 +47,7 @@ const FSB = ({ searchByText, fetchAllJobs }) => {
       "SQL",
       "Azure",
       "Docker",
+      "Python",
     ];
     setSkills(array);
   }, []);
@@ -30,25 +60,48 @@ const FSB = ({ searchByText, fetchAllJobs }) => {
   };
 
   const removeSkill = (skill) => {
-    setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+    if (selectedSkills.length == 0) {
+      setSelectedSkills([]);
+    } else {
+      setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+    }
+  };
+  const filterBySkills = async (selectedSkills) => {
+    try {
+      const skillsParam = Array.isArray(selectedSkills)
+        ? selectedSkills.join(",")
+        : selectedSkills;
+
+      const url = `http://localhost:3000/api/jobs/filter/${encodeURIComponent(
+        skillsParam
+      )}`;
+
+      const response = await axios.get(url);
+
+      // Update jobs with the filtered result
+      setJobs(response.data);
+      console.log("filterBySkills api is running");
+    } catch (error) {
+      console.error("Error filtering jobs by skills:", error);
+    }
   };
 
   const applyFilter = () => {
-    filterBySkills(selectedSkills);
+    if (selectedSkills.length == 0) {
+      fetchAllJobs();
+    } else {
+      filterBySkills(selectedSkills);
+    }
   };
 
   const clearFilters = () => {
     setSelectedSkills([]);
     setInput("");
-  };
-
-  useEffect(() => {
-    if (input) {
-      searchByText(input);
-    } else {
-      fetchAllJobs();
+    if (skillSelectRef.current) {
+      skillSelectRef.current.value = "";
     }
-  }, [input, searchByText]);
+    fetchAllJobs();
+  };
 
   return (
     <div className="shadow-md border rounded-lg w-full lg:w-3/4 p-4 mx-auto mt-10 space-y-8 bg-white">
@@ -74,6 +127,7 @@ const FSB = ({ searchByText, fetchAllJobs }) => {
       </div>
       <div className="flex flex-col lg:flex-row items-start lg:items-center lg:space-x-14 space-y-4 lg:space-y-0">
         <select
+          ref={skillSelectRef} //
           onChange={handleSkillChange}
           className="w-full lg:w-[30%] p-2 border rounded-md outline-none text-gray-700 bg-gray-50 hover:bg-gray-100 focus:ring-2 focus:ring-red-500"
         >
@@ -107,7 +161,6 @@ const FSB = ({ searchByText, fetchAllJobs }) => {
             Apply Filter
           </button>
           <button
-            disabled={input.length === 0}
             onClick={clearFilters}
             className="w-full lg:w-auto bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-md transition duration-300 ease-in-out"
           >

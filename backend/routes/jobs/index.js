@@ -107,9 +107,8 @@ router.get("/get/:id", async (req, res, next) => {
 router.get("/all", async (req, res, next) => {
   try {
     // Fetch all job listings, including only specified fields
-    const jobs = await Job.find(
-      {},
-      { name: 1, logo: 1, position: 1, skills: 1 }
+    const jobs = await Job.find().select(
+      "name logo position salary remote skills jobType location"
     );
 
     // Respond with the list of jobs
@@ -197,16 +196,14 @@ router.get("/filter/:skills", async (req, res, next) => {
   try {
     const skills = req.params.skills;
 
-    // Check if skills parameter is missing
-    if (!skills) {
-      return res.status(400).send("Skills parameter is required");
-    }
-
-    const skillsArray = skills.split(",").map((data) => data.trim());
+    const skillsArray = skills
+      .split(",")
+      .map((data) => data.trim())
+      .filter((skill) => skill !== "");
 
     // Find jobs where skills array includes any of the provided skills
-    const jobs = await Job.find({ skills: { $in: skillsArray } }).select(
-      "name logo position"
+    const jobs = await Job.find({ skills: { $all: skillsArray } }).select(
+      "name logo position salary remote skills jobType location"
     );
 
     // Respond with filtered job listings
@@ -221,7 +218,6 @@ router.get("/search/:query", async (req, res, next) => {
   try {
     const query = req.params.query;
 
-    // Find jobs matching any of the search criteria (case-insensitive)
     const jobs = await Job.find({
       $or: [
         { name: { $regex: query, $options: "i" } },
@@ -229,13 +225,8 @@ router.get("/search/:query", async (req, res, next) => {
         { jobType: { $regex: query, $options: "i" } },
         { description: { $regex: query, $options: "i" } },
       ],
-    }).select("name logo position");
-    // Handle the case where no jobs match the query
-    if (jobs.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No jobs found matching the query" });
-    }
+    }).select("name logo position salary remote skills jobType location");
+
     // Respond with matching job listings
     res.status(200).json(jobs);
   } catch (err) {

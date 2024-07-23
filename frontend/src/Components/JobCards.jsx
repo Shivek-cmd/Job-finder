@@ -2,29 +2,8 @@ import React, { useEffect, useState } from "react";
 import errorImg from "/error.jpg";
 import { Link } from "react-router-dom";
 
-import axios from "axios";
 const JobCards = ({ jobs }) => {
-  const { token } = JSON.parse(localStorage.getItem("userData"));
-
-  // useEffect(() => {
-  //   fetchAllJobs();
-  // }, []);
-
-  const deleteJobById = async (jobId) => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const token = userData ? userData.token : null;
-    try {
-      await axios.delete(`http://localhost:3000/api/jobs/delete/${jobId}`, {
-        data: { token },
-      });
-      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
-      console.log("deleteJobById api is running");
-    } catch (error) {
-      console.error("Error deleting job:", error);
-    }
-  };
-
-  if (!jobs || jobs.length === 0) {
+  if (!Array.isArray(jobs) || jobs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh] text-center">
         <img
@@ -72,16 +51,6 @@ const JobCards = ({ jobs }) => {
               </div>
             </div>
             <div className="flex flex-col md:flex-row md:space-x-4 mt-4 md:mt-0">
-              {token && (
-                <>
-                  <button
-                    onClick={() => deleteJobById(job._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out mt-2 md:mt-0"
-                  >
-                    Delete Job
-                  </button>
-                </>
-              )}
               <Link
                 to={`/job-details/${job._id}`}
                 className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out mt-2 md:mt-0"

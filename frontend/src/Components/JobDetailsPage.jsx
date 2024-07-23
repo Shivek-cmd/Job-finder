@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import axios from "axios";
 
@@ -7,6 +7,7 @@ function JobDetailsPage() {
   const { id } = useParams(); // Get the job ID from the URL
   const [jobs, setJobs] = useState(null);
   const { token } = JSON.parse(localStorage.getItem("userData"));
+  const navigate = useNavigate(); // Use useNavigate for redirection
 
   const fetchJobDetails = async () => {
     try {
@@ -15,9 +16,22 @@ function JobDetailsPage() {
       );
       setJobs(response.data);
     } catch (err) {
-      console.error("error", err);
+      console.error("Error fetching job details:", err);
     }
   };
+
+  const deleteJobById = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/api/jobs/delete/${id}`, {
+        data: { token },
+      });
+      console.log("Job deleted successfully");
+      navigate("/"); // Redirect to homepage after deletion
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
+  };
+
   useEffect(() => {
     // Fetch job details based on the ID
     fetchJobDetails();
@@ -42,14 +56,24 @@ function JobDetailsPage() {
         </div>
         <div className="flex justify-between items-center">
           <h1 className="text-4xl font-extrabold">{jobs.position}</h1>
-          {token && (
-            <Link
-              to={`/update/${jobs._id}`}
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
-            >
-              Edit Job
-            </Link>
-          )}
+          <div className="flex space-x-4">
+            {token && (
+              <>
+                <button
+                  onClick={deleteJobById} // Fix the button onClick handler
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
+                >
+                  Delete Job
+                </button>
+                <Link
+                  to={`/update/${jobs._id}`}
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
+                >
+                  Edit Job
+                </Link>
+              </>
+            )}
+          </div>
         </div>
         <p className="text-gray-600 text-lg">
           {jobs.location} | {jobs.country}

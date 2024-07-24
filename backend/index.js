@@ -23,10 +23,7 @@ app.use(express.json());
 
 // CORS configuration to allow only your frontend URL
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "https://job-finder-git-main-shivek-sonis-projects.vercel.app",
-  ],
+  origin: ["http://localhost:5173", "https://job-finder-rho-nine.vercel.app"],
   exposedHeaders: ["Authorization"],
   credentials: true,
 };

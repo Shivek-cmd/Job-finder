@@ -138,6 +138,7 @@ const updateJobById = async (req, res, next) => {
         salary: salary || defaultJob.salary,
         jobType: jobType || defaultJob.jobType,
         remote: remote || defaultJob.remote,
+        location: location || defaultJob.location,
         description: description || defaultJob.description,
         about: about || defaultJob.about,
         skills: skillsArray,

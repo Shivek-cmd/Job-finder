@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/jobs`;
-
 export const fetchAllJobs = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/all`);

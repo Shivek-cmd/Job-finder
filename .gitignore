@@ -1,6 +1,10 @@
 # Ignore node_modules directories
 /frontend/node_modules/
 /backend/node_modules/
-/backend/.env
+
+# Ignore .env files
 /frontend/.env
+/backend/.env
+
+# Ignore .txt files in the backend directory
 /backend/*.txt

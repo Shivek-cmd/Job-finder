@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
-import errorImg from "/error.jpg";
+import React from "react";
 import { Link } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+import {
+  FaMapMarkerAlt,
+  FaMoneyBillWave,
+  FaCalendarAlt,
+  FaRegClock,
+} from "react-icons/fa";
 
 const JobCards = ({ jobs }) => {
   if (!Array.isArray(jobs) || jobs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh] text-center">
-        <img
-          src={errorImg}
-          alt="No jobs available"
-          className="w-40 h-40 mb-4"
-        />
+        <ClipLoader color="#FF0000" size={50} />
         <p className="text-xl font-semibold text-gray-600 mb-2">
-          No jobs available
-        </p>
-        <p className="text-gray-500">
-          Try adjusting your search criteria or check back later.
+          Loading jobs...
         </p>
       </div>
     );
@@ -38,8 +37,27 @@ const JobCards = ({ jobs }) => {
             </div>
             <div className="flex flex-col flex-grow p-2">
               <h1 className="text-xl font-semibold mb-2">{job.position}</h1>
-              <p className="text-gray-600 mb-4">{job.name}</p>
-              <div className="flex gap-2 mb-4">
+
+              <div className="flex flex-wrap gap-4 mb-4">
+                <div className="flex items-center space-x-2">
+                  <FaMapMarkerAlt className="text-gray-500 text-lg" />
+                  <p className="text-gray-600">{job.location}</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaMoneyBillWave className="text-gray-500 text-lg" />
+                  <p className="text-gray-600">{job.salary}</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaRegClock className="text-gray-500 text-lg" />
+                  <p className="text-gray-600">{job.remote}</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaCalendarAlt className="text-gray-500 text-lg" />
+                  <p className="text-gray-600">{job.jobType}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-4">
                 {job.skills.map((skill, skillIndex) => (
                   <div
                     key={skillIndex}

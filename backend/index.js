@@ -4,10 +4,11 @@ const dotenv = require("dotenv");
 const connectdb = require("./config/connectdb");
 const authRoutes = require("./routes/auth");
 const jobRoutes = require("./routes/jobs");
-
 const fs = require("fs");
-dotenv.config();
 const cors = require("cors");
+
+dotenv.config();
+
 // Middleware to log every incoming request
 app.use((req, res, next) => {
   const log = `${req.method} - ${req.url} - ${req.ip} - ${new Date()}\n`;
@@ -19,7 +20,14 @@ app.use((req, res, next) => {
 
 // Middleware to parse incoming JSON requests
 app.use(express.json());
-app.use(cors());
+
+// CORS configuration to allow only your frontend URL
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+};
+
+app.use(cors(corsOptions));
 
 // Routes for authentication
 app.use("/api/auth", authRoutes);

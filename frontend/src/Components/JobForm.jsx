@@ -84,12 +84,19 @@ function JobForm() {
       errors.position = "Position is required";
     }
 
-    if (formData.salary.trim() === "") {
-      errors.salary = "Salary is required";
-    } else if (isNaN(formData.salary) || Number(formData.salary) < 0) {
-      errors.salary = "Salary must be a non-negative number";
-    }
+    if (formData.salary === "" || isNaN(formData.salary)) {
+      errors.salary = "Salary is required and must be a valid number";
+    } else {
+      const salaryValue = Number(formData.salary);
 
+      if (salaryValue < 0) {
+        errors.salary = "Salary must be a non-negative number";
+      } else if (!Number.isFinite(salaryValue)) {
+        errors.salary = "Salary must be a finite number";
+      } else if (salaryValue % 1 !== 0) {
+        errors.salary = "Salary must be an integer";
+      }
+    }
     if (formData.jobType.trim() === "") {
       errors.jobType = "Job type is required";
     }

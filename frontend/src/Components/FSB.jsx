@@ -50,9 +50,10 @@ const FSB = ({ setJobs }) => {
       "React",
       "CSS",
       "SQL",
-      "Azure",
-      "Docker",
       "Python",
+      "Springboot",
+      "Java",
+      "Machine Learning",
     ];
     setSkills(array);
   }, []);

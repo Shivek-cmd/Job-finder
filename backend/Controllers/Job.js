@@ -73,7 +73,7 @@ const getJobById = async (req, res, next) => {
       return res.status(400).send("Invalid request");
     }
 
-    const job = await Job.findById(id);
+    const job = await Job.findById(id).populate("userId", "name");
     res.status(200).json(job);
   } catch (err) {
     next(err);

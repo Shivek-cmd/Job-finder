@@ -63,7 +63,7 @@ function JobDetailsPage() {
       <div className="container mx-auto mt-8 px-4 sm:px-6 lg:px-8">
         <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-4">
           <div className="flex flex-col sm:flex-row sm:justify-between items-center border-b border-gray-300 pb-4 sm:space-x-10">
-            <div className="flex space-x-4 sm:space-x-6 ">
+            <div className="flex space-x-4 sm:space-x-6">
               <p className="text-gray-400 font-medium mb-2 sm:mb-0">
                 {handleUpdatedDate()}
               </p>
@@ -71,16 +71,19 @@ function JobDetailsPage() {
                 {jobs.remote ? "Remote" : "On-site"}
               </p>
 
-              <div className=" flex space-x-3  text-gray-600 font-medium mb-2 sm:mb-0">
+              <div className="flex space-x-3 text-gray-600 font-medium mb-2 sm:mb-0">
                 <img
                   src={jobs.logo}
                   alt={`${jobs.name} Logo`}
-                  className="w-12 h-12 flex relative bottom-2   object-contain rounded-full shadow-md"
+                  className="w-12 h-12 flex relative bottom-2 object-contain rounded-full shadow-md"
                 />
                 <p className="text-gray-400 font-medium mb-2 sm:mb-0">
                   {jobs.name}
                 </p>
               </div>
+            </div>
+            <div className="text-gray-400 font-medium mb-2 sm:mb-0 ml-auto">
+              Posted by {jobs.userId.name.split(" ")[0]}
             </div>
           </div>
 

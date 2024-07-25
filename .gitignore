@@ -3,8 +3,8 @@
 /backend/node_modules/
 
 # Ignore .env files
-/frontend/.env
-/backend/.env
+./frontend/.env
+./backend/.env
 
 # Ignore .txt files in the backend directory
-/backend/*.txt
+./backend/*.txt

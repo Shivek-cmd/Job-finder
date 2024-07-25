@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { createJob, updateJobById, fetchJobDetailsById } from "../api/Jobs";
+
 const initialFormData = {
   name: "",
   logo: "",
@@ -21,6 +22,7 @@ function JobForm() {
   const { id } = useParams();
 
   const [formData, setFormData] = useState(initialFormData);
+  const [errors, setErrors] = useState({});
   const [skillInput, setSkillInput] = useState("");
 
   useEffect(() => {
@@ -65,6 +67,63 @@ function JobForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Initialize error object
+    const errors = {};
+
+    // Validate required fields
+    if (formData.name.trim() === "") {
+      errors.name = "Name is required";
+    }
+
+    if (formData.logo.trim() === "") {
+      errors.logo = "Logo URL is required";
+    }
+
+    if (formData.position.trim() === "") {
+      errors.position = "Position is required";
+    }
+
+    if (formData.salary.trim() === "") {
+      errors.salary = "Salary is required";
+    } else if (isNaN(formData.salary) || Number(formData.salary) < 0) {
+      errors.salary = "Salary must be a non-negative number";
+    }
+
+    if (formData.jobType.trim() === "") {
+      errors.jobType = "Job type is required";
+    }
+
+    if (formData.remote.trim() === "") {
+      errors.remote = "Remote status is required";
+    }
+
+    if (formData.location.trim() === "") {
+      errors.location = "Location is required";
+    }
+
+    if (formData.description.trim() === "") {
+      errors.description = "Description is required";
+    }
+
+    if (formData.about.trim() === "") {
+      errors.about = "About is required";
+    }
+
+    if (formData.skills.length === 0) {
+      errors.skills = "At least one skill is required";
+    }
+
+    if (formData.information.trim() === "") {
+      errors.information = "Information is required";
+    }
+
+    // If errors exist, update state and exit function
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
+
     try {
       if (id) {
         await updateJobById(id, formData);
@@ -80,6 +139,7 @@ function JobForm() {
   const handleClear = () => {
     setFormData(initialFormData);
     setSkillInput("");
+    setErrors({});
   };
 
   return (
@@ -127,6 +187,9 @@ function JobForm() {
                   onChange={handleChange}
                   className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
+                {errors[name] && (
+                  <p className="text-red-500 text-sm">{errors[name]}</p>
+                )}
               </div>
             ))}
             <div className="flex flex-col space-y-2">
@@ -146,6 +209,9 @@ function JobForm() {
                   )
                 )}
               </select>
+              {errors.jobType && (
+                <p className="text-red-500 text-sm">{errors.jobType}</p>
+              )}
             </div>
             <div className="flex flex-col space-y-2">
               <label className="font-semibold text-gray-700">
@@ -164,6 +230,9 @@ function JobForm() {
                   </option>
                 ))}
               </select>
+              {errors.remote && (
+                <p className="text-red-500 text-sm">{errors.remote}</p>
+              )}
             </div>
           </div>
           {[
@@ -196,6 +265,9 @@ function JobForm() {
                 rows={rows}
                 className="p-3 border rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
+              {errors[name] && (
+                <p className="text-red-500 text-sm">{errors[name]}</p>
+              )}
             </div>
           ))}
           <div className="flex flex-col space-y-2">
@@ -225,6 +297,9 @@ function JobForm() {
                   </div>
                 ))}
               </div>
+              {errors.skills && (
+                <p className="text-red-500 text-sm">{errors.skills}</p>
+              )}
             </div>
           </div>
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">

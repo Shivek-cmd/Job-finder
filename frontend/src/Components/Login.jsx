@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import JobImage from "/JobImage.png";
 import { loginUser } from "../api/User"; // Adjust the path as needed
 import { Link, useNavigate } from "react-router-dom";
+import { TailSpin } from "react-loader-spinner"; // Import the loader from react-loader-spinner
 
 function Login() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ function Login() {
     password: "",
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false); // New state for loading
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,6 +36,9 @@ function Login() {
       return;
     }
     setErrors({});
+    
+    setLoading(true); // Set loading to true when login starts
+
     try {
       const data = await loginUser(formData.email, formData.password);
 
@@ -42,7 +47,6 @@ function Login() {
         name: data.user.name,
       };
 
-      alert("Successfully logged in!");
       localStorage.setItem("userData", JSON.stringify(userData));
       navigate("/");
     } catch (error) {
@@ -56,6 +60,8 @@ function Login() {
         console.error("Error:", error.message);
         alert("An error occurred, please try again");
       }
+    } finally {
+      setLoading(false); // Set loading to false once login attempt is completed
     }
   };
 
@@ -85,12 +91,24 @@ function Login() {
             className="p-3 border border-gray-300 rounded"
           />
           {errors.password && <p className="text-red-500">{errors.password}</p>}
+          
+          {/* Show loader or button based on the loading state */}
           <button
-            type="submit"
-            className="bg-red-500 hover:bg-red-700 text-white p-3 rounded w-[40%]"
-          >
-            Sign in
-          </button>
+          type="submit"
+          className={`bg-red-500 hover:bg-red-700 text-white p-3 rounded w-[40%] flex justify-center items-center ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
+          disabled={loading}
+        >
+          {loading ? (
+            <TailSpin 
+              height="30" 
+              width="30" 
+              color="white" 
+              ariaLabel="loading" 
+            />
+          ) : (
+            "Sign in"
+          )}
+        </button>
         </form>
         <div className="flex space-x-2">
           <p>Don't have an account?</p>

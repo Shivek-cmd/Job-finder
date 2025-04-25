@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import JobImage from "/JobImage.png";
 import { registerUser } from "../api/User"; // Adjust the path as needed
 import { Link, useNavigate } from "react-router-dom";
+import { TailSpin } from "react-loader-spinner"; // Import the loader from react-loader-spinner
 
 function Register() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ function Register() {
     checkbox: false,
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false); // New state for loading
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -46,6 +48,9 @@ function Register() {
       return;
     }
     setErrors({});
+    
+    setLoading(true); // Set loading to true when registration starts
+
     try {
       const data = await registerUser(
         formData.name,
@@ -72,6 +77,8 @@ function Register() {
         console.error("Error:", error.message);
         alert("An error occurred, please try again.");
       }
+    } finally {
+      setLoading(false); // Set loading to false once registration is complete
     }
   };
 
@@ -134,11 +141,23 @@ function Register() {
             </label>
           </div>
           {errors.checkbox && <p className="text-red-500">{errors.checkbox}</p>}
+
+          {/* Show loader or button based on the loading state */}
           <button
             type="submit"
-            className="bg-red-500 hover:bg-red-700 text-white p-3 rounded w-[40%]"
+            className={`bg-red-500 hover:bg-red-700 text-white p-3 rounded w-[40%] flex justify-center items-center ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
+            disabled={loading}
           >
-            Create Account
+            {loading ? (
+              <TailSpin 
+                height="30" 
+                width="30" 
+                color="white" 
+                ariaLabel="loading" 
+              />
+            ) : (
+              "Create Account"
+            )}
           </button>
         </form>
         <div className="flex space-x-2">

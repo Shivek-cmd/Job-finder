@@ -5,10 +5,13 @@ import { Routes, Route } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import NotFound from "./Components/NotFound";
 import JobForm from "./Components/JobForm";
+import { ToastContainer } from "react-toastify";
+
 function App() {
   return (
     <>
       <div>
+        {/* Routes are rendered here */}
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -18,6 +21,9 @@ function App() {
           <Route path="/update/:id" element={<JobForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        
+        {/* ToastContainer should be placed outside the Routes */}
+        <ToastContainer />
       </div>
     </>
   );
